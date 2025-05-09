@@ -55,7 +55,7 @@ class PageHomeStream extends StatelessWidget {
             children: [
               if (user != null)
                 UserAccountsDrawerHeader(
-                  accountEmail: Text(user.email ?? ''), accountName: null,
+                  accountEmail: Text(user.email ?? 'không tìm thấy email người dùng'), accountName: null,
                 )
               else
                 Padding(

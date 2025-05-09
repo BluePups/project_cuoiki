@@ -79,8 +79,10 @@ class PageChitietProduct extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => {
-          if(response?.session!=null && response?.user!=null)
-            ControllerProduct.get().themMHGH(product)
+          if(response?.session!=null && response?.user!=null) {
+            ControllerProduct.get().themMHGH(product, response!.user!.id.toString()),
+            // print("id là: " + response!.user!.id.toString()),
+          }
           else
             Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => PageStoreLogin(),)

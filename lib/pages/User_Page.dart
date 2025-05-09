@@ -1,5 +1,6 @@
 import 'package:cuoiki/main.dart';
 import 'package:cuoiki/models/User_Model.dart';
+import 'package:cuoiki/pages/HomeStoreStream_Page.dart';
 import 'package:cuoiki/pages/SettingUser_Page.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
@@ -76,7 +77,18 @@ class PageVerifyOTP extends StatelessWidget {
                 type: OtpType.email,
               );
 
+              final user = response.user;
+
               if (response.session != null && response.user != null) {
+                final uuid = user?.id;
+
+                await Supabase.instance.client.from("KhachHang").insert({
+                  "id": uuid,
+                  "tenKH": "",
+                  "soDienThoai": "",
+                  "diaChi": ""
+                });
+
                 Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => PageThongTinKH()),
                       (route) => false,
@@ -169,7 +181,9 @@ class _PageThongTinKHState extends State<PageThongTinKH> {
             SizedBox(height: 8),
             Text("Địa chỉ: ${khachHang!.diaChi}", style: TextStyle(fontSize: 18)),
             SizedBox(height: 50),
-            BuildButton(context, title: "Cập nhật thông tin", destination: PageUserUpdate(khachHang: khachHang!))
+            BuildButton(context, title: "Cập nhật thông tin", destination: PageUserUpdate(khachHang: khachHang!)),
+            SizedBox(height: 10,),
+            BuildButton(context, title: "Quay lại trang chủ để mua hàng nào", destination: PageHomeStream())
           ],
         ),
       ),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 import '../models/Product_Model.dart';
 import 'User_Page.dart';
 
@@ -78,15 +79,16 @@ class PageChitietProduct extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => {
-          if(response?.session!=null && response?.user!=null) {
-            ControllerProduct.get().themMHGH(product, response!.user!.id.toString()),
-            // print("id là: " + response!.user!.id.toString()),
+        onPressed: () {
+          final currentUser = Supabase.instance.client.auth.currentUser;
+          if(currentUser != null) {
+            ControllerProduct.get().themMHGH(product, currentUser.id);
+            print("id là: " + response!.user!.id.toString());
           }
           else
             Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => PageStoreLogin(),)
-            ),
+            );
         },
         child: Icon(Icons.add_shopping_cart_outlined),
       ),

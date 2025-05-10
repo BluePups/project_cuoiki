@@ -69,6 +69,7 @@ class PageHomeStream extends StatelessWidget {
                   title: Text('Đăng xuất'),
                   onTap: () async {
                     await authController.signOut();
+                    print("ID la: " + user!.id.toString());
                   },
                 ),
 

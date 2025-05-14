@@ -16,7 +16,7 @@ class GioHang {
     return GioHang(
       id: json["id"] as int,
       id_user: json["id_user"],
-      id_sp: json["id_sp"],
+      id_sp: json["id_sp"] as int,
       soLuong: json["soLuong"] as int,
       thoiGian: json["thoiGian"],
     );
@@ -63,5 +63,49 @@ class GioHangSnapshot {
         fromJson: GioHang.fromJson,
         getId: (t) => t.id,
         updateUI: updateUI);
+  }
+}
+
+class GioHangSanPham {
+  int id;
+  String id_user;
+  int id_sp;
+  int? soLuong;
+  String? ten_sp;
+  String? anh_sp;
+  int? gia_sp;
+
+  GioHangSanPham({
+    required this.id,
+    required this.id_user,
+    required this.id_sp,
+    required this.soLuong,
+    required this.ten_sp,
+    required this.anh_sp,
+    required this.gia_sp,
+  });
+
+  factory GioHangSanPham.fromJson(Map<String, dynamic> json) {
+    return GioHangSanPham(
+      id: json['id'] as int,
+      id_user: json['id_user'],
+      id_sp: json['id_sp'] as int,
+      soLuong: json['soLuong'],
+      ten_sp: json['ten_sp'],
+      anh_sp: json['anh_sp'],
+      gia_sp: json['gia_sp'],
+    );
+  }
+}
+
+class GioHangSanPhamSnapshot {
+  static Stream<List<GioHangSanPham>> getDataGioHangSanPham(String userID) {
+    final stream = Supabase.instance.client
+        .from("giohangsanpham")
+        .stream(primaryKey: ['id'])
+        .eq('id_user', userID);
+
+    return stream.map((list) =>
+        list.map((item) => GioHangSanPham.fromJson(item)).toList());
   }
 }

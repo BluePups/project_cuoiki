@@ -28,47 +28,40 @@ class PageGioHangStream extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: StreamBuilder(
-        stream: GioHangSnapshot.getDataGioHang(currentUser!.id),
+        stream: GioHangSanPhamSnapshot.getDataGioHangSanPham(currentUser!.id),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             print("Error: ${snapshot.error}");
-            return Center(child: Text("Lỗi: ${snapshot.error}" + "${currentUser!.id}"));
+            return Center(child: Text("Lỗi: ${snapshot.error}"));
           }
-          if(!snapshot.hasData) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(),
-                  Text("Loading.............."),
-                ],
-              ),
-            );
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
           }
+
           var gioHangs = snapshot.data!;
           return GridView.extent(
             maxCrossAxisExtent: 300,
             crossAxisSpacing: 5,
             mainAxisSpacing: 5,
             childAspectRatio: 0.75,
-            children: gioHangs.map(
-                    (gioHang) {
-                  return Card(
-                    child: GestureDetector(
-                      child: Column(
-                          children: [
-                            Text("${gioHang.id}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
-                            Text("${gioHang.soLuong}"),
-                            Text("${gioHang.id_sp}"),
-                          ]
-                      ),
+            children: gioHangs.map((item) {
+              return Card(
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Image.network(item.anh_sp?? ""),
                     ),
-                  );
-                }
-            ).toList(),
+                    Text(item.ten_sp?? "Sản phẩm", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    Text("${item.gia_sp?? 0} VND"),
+                    Text("Số lượng: ${item.soLuong?? 1}")
+                  ],
+                ),
+              );
+            }).toList(),
           );
         },
-      ),
+      )
+,
     );
   }
 }

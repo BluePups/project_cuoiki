@@ -5,9 +5,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ControllerProduct extends GetxController {
   Map<int, Product> _maps = {};
-  var gh = <GH_Item>[];
+  int slMHGH = 0;
 
-  int get slMHGH => gh.length;
   static ControllerProduct get() => Get.find();
   Iterable<Product> get products => _maps.values;
 
@@ -47,16 +46,6 @@ class ControllerProduct extends GetxController {
         "soLuong": 1,
       });
     }
-
-    for(var item in gh) {
-      if(p.id == item.product.id) {
-        item.sl++;
-        return;
-      }
-    }
-
-    gh.add(GH_Item(product: p, sl: 1));
-    update(["gh"]);
   }
 
 }
@@ -68,11 +57,4 @@ class BindingsHomeProductStore extends Bindings {
           () => ControllerProduct(),
     );
   }
-}
-
-class GH_Item {
-  Product product;
-  int sl;
-
-  GH_Item({required this.product, required this.sl});
 }

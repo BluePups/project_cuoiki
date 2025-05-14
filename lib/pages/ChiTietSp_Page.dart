@@ -59,7 +59,7 @@ class PageChitietProduct extends StatelessWidget {
               Row(
                 children: [
                   RatingBarIndicator(
-                    rating: 2.75,
+                    rating: 4.75,
                     itemBuilder: (context, index) => Icon(
                       Icons.star,
                       color: Colors.amber,
@@ -69,7 +69,7 @@ class PageChitietProduct extends StatelessWidget {
                     direction: Axis.horizontal,
                   ),
                   SizedBox(height: 10, width: 20,),
-                  Text("2,75", style: TextStyle(color: Colors.red),),
+                  Text("4,75", style: TextStyle(color: Colors.red),),
                   SizedBox(height: 10, width: 20,),
                   Text("${1 + Random().nextInt(1000)} đánh giá"),
                 ],

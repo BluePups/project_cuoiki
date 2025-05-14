@@ -2,8 +2,10 @@ import 'package:cuoiki/controllers/User_Controller.dart';
 import 'package:cuoiki/main.dart';
 import 'package:cuoiki/models/Product_Model.dart';
 import 'package:cuoiki/pages/ChiTietSp_Page.dart';
+import 'package:cuoiki/pages/GioHang_Page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 import '../controllers/Product_Controller.dart';
 import 'package:badges/badges.dart' as badges;
 import 'User_Page.dart';
@@ -38,14 +40,26 @@ class PageHomeStream extends StatelessWidget {
         actions: [
           GetBuilder(
             init: ControllerProduct.get(),
-            id:"gh",
-            builder: (controller) => badges.Badge(
-              showBadge: controller.slMHGH>0,
-              badgeContent: Text('${controller.slMHGH}', style: TextStyle(color: Colors.white),),
-              child: Icon(Icons.shopping_cart),
-            ),),
-          SizedBox(width: 20,)
+            id: "gh",
+            builder: (controller) => GestureDetector(
+              onTap: () {
+                final currentUser = Supabase.instance.client.auth.currentUser;
+                if(currentUser != null) {
+                  Get.to(() => PageGioHang());
+                }
+                else
+                  Get.to(() => PageStoreLogin());
+              },
+              child: badges.Badge(
+                showBadge: controller.slMHGH > 0,
+                badgeContent: Text('', style: TextStyle(color: Colors.white)),
+                child: Icon(Icons.shopping_cart),
+              ),
+            ),
+          ),
+          SizedBox(width: 20),
         ],
+
       ),
       drawer: Drawer(
         child: Obx(() {
@@ -111,7 +125,7 @@ class PageHomeStream extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: Container(
-                                  child: Image.network(product.anh?? ""),
+                                  child: Image.network(product.anh?? "https://ikdmkoqsurmbycuheihy.supabase.co/storage/v1/object/public/images/images/tui.jpg"),
                                 ),
                               ),
                               Text(product.ten, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),

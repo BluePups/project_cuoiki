@@ -10,7 +10,6 @@ class ControllerProduct extends GetxController {
   static ControllerProduct get() => Get.find();
   Iterable<Product> get products => _maps.values;
 
-
   @override
   void onReady() async {
     super.onReady();
@@ -46,6 +45,20 @@ class ControllerProduct extends GetxController {
         "soLuong": 1,
       });
     }
+  }
+  Future<void> capNhatSoLuongMatHangGioHang(String userId) async {
+    final supabase = Supabase.instance.client;
+
+    final list = await supabase
+        .from("GioHang")
+        .select("id_sp")
+        .eq("id_user", userId);
+
+    final uniqueIdSp = list.map((e) => e["id_sp"]).toSet();
+
+    slMHGH = uniqueIdSp.length;
+
+    update(["gh"]);
   }
 
 }

@@ -51,8 +51,8 @@ class PageHomeStream extends StatelessWidget {
                   Get.to(() => PageStoreLogin());
               },
               child: badges.Badge(
-                showBadge: controller.slMHGH > 0,
-                badgeContent: Text('', style: TextStyle(color: Colors.white)),
+                showBadge: controller.slMHGH! > 0,
+                badgeContent: Text('${controller.slMHGH}', style: TextStyle(color: Colors.red)),
                 child: Icon(Icons.shopping_cart),
               ),
             ),
@@ -67,30 +67,41 @@ class PageHomeStream extends StatelessWidget {
           final user = authController.user.value;
           return ListView(
             children: [
-              if (user != null)
+              if (user != null) ...[
                 UserAccountsDrawerHeader(
-                  accountEmail: Text(user.email ?? 'không tìm thấy email người dùng'), accountName: null,
-                )
-              else
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: BuildButton(context, title: "Đăng nhập", destination: PageStoreLogin()),
+                  accountEmail: Text(user.email ?? 'không tìm thấy email người dùng'),
+                  accountName: null,
                 ),
-              if (user != null)
                 BuildButton(context, title: "Thông tin", destination: PageThongTinKH()),
                 ListTile(
                   leading: Icon(Icons.logout),
                   title: Text('Đăng xuất'),
                   onTap: () async {
                     await authController.signOut();
-                    print("ID la: " + user!.id.toString());
+                    // print("ID la: " + user!.id.toString());
+                    // Navigator.of(context).pop();
                   },
                 ),
-
+              ] else ...[
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ListTile(
+                    leading: Icon(Icons.login),
+                    title: Text("Đăng nhập"),
+                    onTap: () async {
+                      await Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => PageStoreLogin()),
+                      );
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
+              ]
             ],
           );
         }),
       ),
+
       body: StreamBuilder(
           stream: ProductSnapShot.getProductStream(),
           builder: (context, snapshot) {

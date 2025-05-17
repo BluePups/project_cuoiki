@@ -36,11 +36,12 @@ class PageHomeStore extends StatelessWidget {
             init: ControllerProduct.get(),
             id:"gh",
             builder: (controller) => badges.Badge(
-              showBadge: controller.slMHGH>0,
-              badgeContent: Text('${controller.slMHGH}', style: TextStyle(color: Colors.white),),
+              showBadge: controller.slMHGH!>0,
+              badgeContent: Text('${controller.slMHGH?? 10}', style: TextStyle(color: Colors.white),),
               child: Icon(Icons.shopping_cart),
-            ),),
-          SizedBox(width: 20,)
+            ),
+          ),
+          SizedBox(width: 20,),
         ],
       ),
       drawer: Drawer(

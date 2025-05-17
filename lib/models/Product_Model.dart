@@ -44,7 +44,7 @@ class ProductSnapShot {
     await supabase.from("SanPham")
         .delete()
         .eq("id", id);
-    await deleteImage(bucket: "images",path: "images/product_${id}.jpg");
+    await deleteImage(bucket: "images",path: "products/Product_${id}.jpg");
     return;
   }
 

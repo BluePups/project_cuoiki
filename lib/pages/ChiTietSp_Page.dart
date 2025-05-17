@@ -2,10 +2,12 @@ import 'dart:math';
 import 'package:cuoiki/controllers/Product_Controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 import '../models/Product_Model.dart';
+import 'GioHang_Page.dart';
 import 'User_Page.dart';
 
 class PageChitietProduct extends StatelessWidget {
@@ -21,12 +23,23 @@ class PageChitietProduct extends StatelessWidget {
         actions: [
           GetBuilder(
             init: ControllerProduct.get(),
-            id:"gh",
-            builder: (controller) => badges.Badge(
-              showBadge: controller.slMHGH>0,
-              badgeContent: Text('${controller.slMHGH}', style: TextStyle(color: Colors.white),),
-              child: Icon(Icons.shopping_cart),
-            ),),
+            id: "gh",
+            builder: (controller) => GestureDetector(
+              onTap: () {
+                final currentUser = Supabase.instance.client.auth.currentUser;
+                if(currentUser != null) {
+                  Get.to(() => PageGioHang());
+                }
+                else
+                  Get.to(() => PageStoreLogin());
+              },
+              child: badges.Badge(
+                showBadge: controller.slMHGH! > 0,
+                badgeContent: Text('${controller.slMHGH}', style: TextStyle(color: Colors.red)),
+                child: Icon(Icons.shopping_cart),
+              ),
+            ),
+          ),
           SizedBox(width: 20,)
         ],
       ),

@@ -39,29 +39,47 @@ class PageGioHangStream extends StatelessWidget {
           }
 
           var gioHangs = snapshot.data!;
-          return GridView.extent(
-            maxCrossAxisExtent: 300,
-            crossAxisSpacing: 5,
-            mainAxisSpacing: 5,
-            childAspectRatio: 0.75,
-            children: gioHangs.map((item) {
+          return ListView.builder(
+            itemCount: gioHangs.length,
+            itemBuilder: (context, index) {
+              final item = gioHangs[index];
               return Card(
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Image.network(item.anh_sp?? ""),
-                    ),
-                    Text(item.ten_sp?? "Sản phẩm", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                    Text("${item.gia_sp?? 0} VND"),
-                    Text("Số lượng: ${item.soLuong?? 1}")
-                  ],
+                margin: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          image: DecorationImage(
+                            image: NetworkImage(item.anh_sp ?? ""),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(item.ten_sp ?? "", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+                            SizedBox(height: 4),
+                            Text("Số lượng: ${item.soLuong}"),
+                          ],
+                        ),
+                      ),
+                      Text("${item.gia_sp ?? 0} đ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.red,),),
+                    ],
+                  ),
                 ),
               );
-            }).toList(),
+            },
           );
         },
-      )
-,
+      ),
     );
   }
 }

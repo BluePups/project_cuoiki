@@ -5,7 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ControllerProduct extends GetxController {
   Map<int, Product> _maps = {};
-  int slMHGH = 0;
+  RxInt slMHGH = 0.obs;
 
   static ControllerProduct get() => Get.find();
   Iterable<Product> get products => _maps.values;
@@ -56,7 +56,7 @@ class ControllerProduct extends GetxController {
 
     final uniqueIdSp = list.map((e) => e["id_sp"]).toSet();
 
-    slMHGH = uniqueIdSp.length;
+    slMHGH = uniqueIdSp.length as RxInt;
 
     update(["gh"]);
   }

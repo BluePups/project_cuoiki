@@ -18,29 +18,6 @@ class _PageGioHangStreamState extends State<PageGioHang> {
   final currentUser = Supabase.instance.client.auth.currentUser;
   final gioHangController = Get.put(ControllerGioHang());
 
-  int tinhTongTien(List<GioHangSanPham> items) {
-    return items
-        .where((item) => gioHangController.selectedIds.contains(item.id))
-        .map((item) => (item.gia_sp ?? 0) * (item.soLuong ?? 1))
-        .fold(0, (a, b) => a + b);
-  }
-
-  void xuLyThanhToan() async {
-    final supabase = Supabase.instance.client;
-
-    for (var id in gioHangController.selectedIds) {
-      await supabase.from('GioHang').delete().eq('id', id);
-    }
-
-    gioHangController.selectedIds.clear();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Đã thanh toán")),
-    );
-    Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => PageHomeStream(),)
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,6 +36,10 @@ class _PageGioHangStreamState extends State<PageGioHang> {
           }
 
           var gioHangs = snapshot.data!;
+
+          if (gioHangs.isEmpty) {
+            return Center(child: Text("Giỏ hàng của bạn đang trống, hãy vào trang chủ và mua gì đó"));
+          }
 
           return Column(
             children: [
@@ -142,7 +123,19 @@ class _PageGioHangStreamState extends State<PageGioHang> {
                           style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold)),
                       ElevatedButton(
-                        onPressed: gioHangController.selectedIds.isEmpty ? null : xuLyThanhToan,
+                        onPressed: () {
+                          if (gioHangController.selectedIds.isEmpty) {
+                            return;
+                          } else {
+                            gioHangController.xuLyThanhToan();
+                            ScaffoldMessenger.of(context!).showSnackBar(
+                              SnackBar(content: Text("Đã thanh toán")),
+                            );
+                            Navigator.of(context!).push(
+                                MaterialPageRoute(builder: (context) => PageHomeStream(),)
+                            );
+                          }
+                        },
                         child: Text("Thanh toán"),
                       ),
                     ],

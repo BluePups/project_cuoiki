@@ -1,4 +1,4 @@
-import 'package:cuoiki/admin/Product_Admin_Page.dart';
+
 import 'package:cuoiki/pages/HomeStoreStream_Page.dart';
 import 'package:cuoiki/pages/HomeStore_Page.dart';
 import 'package:cuoiki/pages/User_Page.dart';
@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'admin/Product_Admin_Page.dart';
 import 'controllers/User_Controller.dart';
 
 void main() async {
@@ -69,7 +70,7 @@ class PageHome extends StatelessWidget {
             children: [
               BuildButton(context, title: "Trang chủ", destination: AppStore()),
               BuildButton(context, title: "Trang chủ Stream", destination: AppStreamStore()),
-              BuildButton(context, title: "Trang chủ Admin", destination: PageProductAdmin()),
+              BuildButton(context, title: "Trang chủ Admin", destination: ProductAdminPage()),
             ],
           ),
         ),

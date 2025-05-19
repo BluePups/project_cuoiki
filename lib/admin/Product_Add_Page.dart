@@ -1,10 +1,9 @@
 import 'dart:io';
 
-import 'package:cuoiki/admin/Product_Admin_Page.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
-import 'package:cuoiki/helper/Dialogs.dart';
+import 'package:cuoiki/admin/Product_Admin_Page.dart';
 import 'package:cuoiki/models/Product_Model.dart';
 import 'package:cuoiki/helper/Supabase_helper.dart';
 
@@ -17,7 +16,7 @@ class PageAddProduct extends StatefulWidget {
 
 class _PageAddProductState extends State<PageAddProduct> {
   XFile? xFile;
-  TextEditingController txtId = TextEditingController();
+  TextEditingController txtID = TextEditingController();
   TextEditingController txtTen = TextEditingController();
   TextEditingController txtGia = TextEditingController();
   TextEditingController txtMoTa = TextEditingController();
@@ -26,7 +25,7 @@ class _PageAddProductState extends State<PageAddProduct> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add Product"),
+        title: Text("Thêm sản phẩm"),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: SingleChildScrollView(
@@ -36,80 +35,96 @@ class _PageAddProductState extends State<PageAddProduct> {
             children: [
               Container(
                 height: 300,
-                child: xFile == null
-                    ? Icon(
-                  Icons.image,
-                  size: 50,
-                )
-                    : Image.file(File(xFile!.path)),
+                child: xFile == null ? Icon(Icons.image, size: 50,) : Image.file(File(xFile!.path)),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   ElevatedButton(
-                      onPressed: () async {
-                        var imagePicker = await ImagePicker()
-                            .pickImage(source: ImageSource.gallery);
-
-                        if (imagePicker != null) {
+                      onPressed: () async{
+                        var imagePicker = await ImagePicker().pickImage(source: ImageSource.gallery);
+                        if(imagePicker != null) {
                           setState(() {
                             xFile = imagePicker;
                           });
                         }
                       },
-                      child: Text("Chọn ảnh")),
-                  SizedBox(
-                    width: 15,
+                      child: Text("Chọn ảnh")
                   ),
+                  SizedBox(width: 15,),
                 ],
               ),
               TextField(
-                controller: txtId,
-                keyboardType: TextInputType.numberWithOptions(
-                    signed: false, decimal: false),
-                decoration: InputDecoration(labelText: "Id"),
+                controller: txtID,
+                keyboardType: TextInputType.numberWithOptions(signed: false, decimal: false),
+                decoration: InputDecoration(
+                  labelText: "ID",
+                ),
               ),
               TextField(
                 controller: txtTen,
-                decoration: InputDecoration(labelText: "Tên"),
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(
+                  labelText: "Tên",
+                ),
               ),
               TextField(
                 controller: txtGia,
-                keyboardType: TextInputType.numberWithOptions(
-                    signed: false, decimal: false),
-                decoration: InputDecoration(labelText: "Giá"),
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: "Giá",
+                ),
               ),
               TextField(
                 controller: txtMoTa,
-                decoration: InputDecoration(labelText: "Mô tả"),
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(
+                  labelText: "Mô tả",
+                ),
               ),
-              ElevatedButton(
-                  onPressed: () async {
-                    if (xFile != null) {
-                      showSnackBar(context,
-                          message: "Đang thêm ${txtTen.text} ...",
-                      );
-                      var imageUrl = await uploadImage(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                    onPressed: () async{
+                      if(xFile != null) {
+                        ScaffoldMessenger.of(context).clearSnackBars();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text("Đang thêm ${txtTen.text}..."),
+                                duration: Duration(seconds: 5)
+                            )
+                        );
+                        var imageUrl = await uploadImage(
                           image: File(xFile!.path),
                           bucket: "images",
-                          path: "products/Product_${txtId.text}.jpg"
-                      );
-                      Product product = Product(
-                          id: int.parse(txtId.text),
+                          path: "images/product_${txtID.text}.jpg",
+                        );
+                        Product product = Product(
+                          id: int.parse(txtID.text),
                           ten: txtTen.text,
-                          anh: imageUrl,
                           gia: int.parse(txtGia.text),
-                          moTa: txtMoTa.text
+                          moTa: txtMoTa.text,
+                          anh: imageUrl,
+                        );
+                        ProductSnapShot.insert(product);
+                        ScaffoldMessenger.of(context).clearSnackBars();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Đã thêm ${txtTen.text}"),
+                              duration: Duration(seconds: 5),
+                            )
+                        );
+                      }
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => ProductAdminPage(),)
                       );
-                      ProductSnapShot.insert(product);
-                      showSnackBar(context,
-                          message: "Đã thêm ${txtTen.text}",);
-                    }
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => PageProductAdmin(),)
-                    );
-                  },
-                  child: Text("Thêm")),
+                    },
+                    child: Text("Thêm"),
+                  ),
+                  SizedBox(width: 15,),
+                ],
+              ),
             ],
           ),
         ),

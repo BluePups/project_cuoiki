@@ -69,7 +69,7 @@ class PageHome extends StatelessWidget {
             children: [
               BuildButton(context, title: "Trang chủ", destination: AppStore()),
               BuildButton(context, title: "Trang chủ Stream", destination: AppStreamStore()),
-              BuildButton(context, title: "Trang chủ Admin", destination: PageProductAdmin()),
+              BuildButton(context, title: "Trang chủ Admin", destination: ProductAdminPage()),
             ],
           ),
         ),

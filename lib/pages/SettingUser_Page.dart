@@ -1,5 +1,5 @@
-import 'package:cuoiki/models/User_Model.dart';
-import 'package:cuoiki/pages/User_Page.dart';
+import 'package:du_an_cuoi_ki/models/User_Model.dart';
+import 'package:du_an_cuoi_ki/pages/User_Page.dart';
 import 'package:flutter/material.dart';
 import '../helper/Dialogs.dart';
 

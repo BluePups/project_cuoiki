@@ -1,5 +1,5 @@
-import 'package:cuoiki/controllers/Product_Controller.dart';
-import 'package:cuoiki/pages/ChiTietSp_Page.dart';
+import 'package:du_an_cuoi_ki/controllers/Product_Controller.dart';
+import 'package:du_an_cuoi_ki/pages/ChiTietSp_Page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
@@ -48,45 +48,45 @@ class PageHomeStore extends StatelessWidget {
         child: ListView(
           children: [
             UserAccountsDrawerHeader(
-              accountName: Text("data"),
-              accountEmail: Text("data"))
+                accountName: Text("data"),
+                accountEmail: Text("data"))
           ],
         ),
       ),
       body: GetBuilder(
-        init: ControllerProduct.get(),
-        id: "Products",
-        builder: (controller) {
-          var products = controller.products;
-          return GridView.extent(
-            maxCrossAxisExtent: 300,
-            mainAxisSpacing: 9,
-            crossAxisSpacing: 5,
-            childAspectRatio: 0.75,
-            children: products.map(
-              (e) {
-              return Card(
-                child: GestureDetector(
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          child: Image.network(e.anh?? "https://ikdmkoqsurmbycuheihy.supabase.co/storage/v1/object/public/images/images/tui.jpg"),
+          init: ControllerProduct.get(),
+          id: "Products",
+          builder: (controller) {
+            var products = controller.products;
+            return GridView.extent(
+              maxCrossAxisExtent: 300,
+              mainAxisSpacing: 9,
+              crossAxisSpacing: 5,
+              childAspectRatio: 0.75,
+              children: products.map(
+                      (e) {
+                    return Card(
+                      child: GestureDetector(
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                child: Image.network(e.anh?? "https://ikdmkoqsurmbycuheihy.supabase.co/storage/v1/object/public/images/images/tui.jpg"),
+                              ),
+                            ),
+                            Text(e.ten),
+                            Text("${e.gia?? 0} vnd"),
+                          ],
                         ),
+                        onTap: () => {
+                          Get.to(PageChitietProduct(product: e))
+                        },
                       ),
-                      Text(e.ten),
-                      Text("${e.gia?? 0} vnd"),
-                    ],
-                  ),
-                  onTap: () => {
-                    Get.to(PageChitietProduct(product: e))
-                  },
-                ),
-              );
-            }
-            ).toList(),
-          );
-        }),
+                    );
+                  }
+              ).toList(),
+            );
+          }),
     );
   }
 }

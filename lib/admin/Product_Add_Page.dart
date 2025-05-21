@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:cuoiki/admin/Product_Admin_Page.dart';
+import 'package:du_an_cuoi_ki/admin/Product_Admin_Page.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'package:cuoiki/helper/Dialogs.dart';
-import 'package:cuoiki/models/Product_Model.dart';
-import 'package:cuoiki/helper/Supabase_helper.dart';
+import 'package:du_an_cuoi_ki/helper/Dialogs.dart';
+import 'package:du_an_cuoi_ki/models/Product_Model.dart';
+import 'package:du_an_cuoi_ki/helper/Supabase_helper.dart';
 
 class PageAddProduct extends StatefulWidget {
   const PageAddProduct({super.key});
@@ -87,7 +87,7 @@ class _PageAddProductState extends State<PageAddProduct> {
                   onPressed: () async {
                     if (xFile != null) {
                       showSnackBar(context,
-                          message: "Đang thêm ${txtTen.text} ...",
+                        message: "Đang thêm ${txtTen.text} ...",
                       );
                       var imageUrl = await uploadImage(
                           image: File(xFile!.path),
@@ -103,7 +103,7 @@ class _PageAddProductState extends State<PageAddProduct> {
                       );
                       ProductSnapShot.insert(product);
                       showSnackBar(context,
-                          message: "Đã thêm ${txtTen.text}",);
+                        message: "Đã thêm ${txtTen.text}",);
                     }
                     Navigator.of(context).push(
                         MaterialPageRoute(builder: (context) => PageProductAdmin(),)

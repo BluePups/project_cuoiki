@@ -1,9 +1,9 @@
-import 'package:cuoiki/admin/Product_Add_Page.dart';
-import 'package:cuoiki/admin/Product_Update_Page.dart';
-import 'package:cuoiki/admin/Product_Update_Page.dart';
-import 'package:cuoiki/models/Product_Model.dart';
-import 'package:cuoiki/helper/Dialogs.dart';
-import 'package:cuoiki/mywidgets/async_widget.dart';
+import 'package:du_an_cuoi_ki/admin/Product_Add_Page.dart';
+import 'package:du_an_cuoi_ki/admin/Product_Update_Page.dart';
+import 'package:du_an_cuoi_ki/admin/Product_Update_Page.dart';
+import 'package:du_an_cuoi_ki/models/Product_Model.dart';
+import 'package:du_an_cuoi_ki/helper/Dialogs.dart';
+import 'package:du_an_cuoi_ki/mywidgets/async_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 

@@ -1,13 +1,13 @@
 import 'dart:io';
 
-import 'package:cuoiki/admin/Product_Admin_Page.dart';
-import 'package:cuoiki/pages/HomeStoreStream_Page.dart';
+import 'package:du_an_cuoi_ki/admin/Product_Admin_Page.dart';
+import 'package:du_an_cuoi_ki/pages/HomeStoreStream_Page.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'package:cuoiki/helper/Dialogs.dart';
-import 'package:cuoiki/models/Product_Model.dart';
-import 'package:cuoiki/helper/Supabase_helper.dart';
+import 'package:du_an_cuoi_ki/helper/Dialogs.dart';
+import 'package:du_an_cuoi_ki/models/Product_Model.dart';
+import 'package:du_an_cuoi_ki/helper/Supabase_helper.dart';
 
 class PageUpdateProduct extends StatefulWidget {
   PageUpdateProduct({super.key, required this.product});

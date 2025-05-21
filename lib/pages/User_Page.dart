@@ -1,7 +1,7 @@
-import 'package:cuoiki/main.dart';
-import 'package:cuoiki/models/User_Model.dart';
-import 'package:cuoiki/pages/HomeStoreStream_Page.dart';
-import 'package:cuoiki/pages/SettingUser_Page.dart';
+import 'package:du_an_cuoi_ki/main.dart';
+import 'package:du_an_cuoi_ki/models/User_Model.dart';
+import 'package:du_an_cuoi_ki/pages/HomeStoreStream_Page.dart';
+import 'package:du_an_cuoi_ki/pages/SettingUser_Page.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
@@ -190,4 +190,3 @@ class _PageThongTinKHState extends State<PageThongTinKH> {
     );
   }
 }
-

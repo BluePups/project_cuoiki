@@ -1,10 +1,11 @@
-import 'package:cuoiki/admin/Product_Admin_Page.dart';
-import 'package:cuoiki/pages/HomeStoreStream_Page.dart';
-import 'package:cuoiki/pages/HomeStore_Page.dart';
-import 'package:cuoiki/pages/User_Page.dart';
+import 'package:du_an_cuoi_ki/admin/Product_Admin_Page.dart';
+import 'package:du_an_cuoi_ki/pages/HomeStoreStream_Page.dart';
+import 'package:du_an_cuoi_ki/pages/HomeStore_Page.dart';
+import 'package:du_an_cuoi_ki/pages/User_Page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:du_an_cuoi_ki/admin/admin_dashboard_page.dart';
 
 import 'controllers/User_Controller.dart';
 
@@ -12,8 +13,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Supabase.initialize(
-    url: "https://ikdmkoqsurmbycuheihy.supabase.co",
-    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlrZG1rb3FzdXJtYnljdWhlaWh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY0MTYwMTAsImV4cCI6MjA2MTk5MjAxMH0.QcBWtPEIvW5YqNBdyNkCKX9nbuCWlhRUUFbuRVPjIkk");
+      url: "https://ikdmkoqsurmbycuheihy.supabase.co",
+      anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlrZG1rb3FzdXJtYnljdWhlaWh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY0MTYwMTAsImV4cCI6MjA2MTk5MjAxMH0.QcBWtPEIvW5YqNBdyNkCKX9nbuCWlhRUUFbuRVPjIkk");
   // runApp( AppStore());
   Get.put(AuthController());
   runApp( MyApp());
@@ -69,7 +70,7 @@ class PageHome extends StatelessWidget {
             children: [
               BuildButton(context, title: "Trang chủ", destination: AppStore()),
               BuildButton(context, title: "Trang chủ Stream", destination: AppStreamStore()),
-              BuildButton(context, title: "Trang chủ Admin", destination: PageProductAdmin()),
+              BuildButton(context, title: "Trang chủ Admin", destination: AdminDashboardPage()),
             ],
           ),
         ),

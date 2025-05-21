@@ -1,8 +1,8 @@
-import 'package:cuoiki/controllers/User_Controller.dart';
-import 'package:cuoiki/main.dart';
-import 'package:cuoiki/models/Product_Model.dart';
-import 'package:cuoiki/pages/ChiTietSp_Page.dart';
-import 'package:cuoiki/pages/GioHang_Page.dart';
+import 'package:du_an_cuoi_ki/controllers/User_Controller.dart';
+import 'package:du_an_cuoi_ki/main.dart';
+import 'package:du_an_cuoi_ki/models/Product_Model.dart';
+import 'package:du_an_cuoi_ki/pages/ChiTietSp_Page.dart';
+import 'package:du_an_cuoi_ki/pages/GioHang_Page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';

@@ -1,5 +1,5 @@
-import 'package:cuoiki/controllers/GioHang_Controller.dart';
-import 'package:cuoiki/models/GioHang_Model.dart';
+import 'package:du_an_cuoi_ki/controllers/GioHang_Controller.dart';
+import 'package:du_an_cuoi_ki/models/GioHang_Model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

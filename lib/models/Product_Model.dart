@@ -1,7 +1,7 @@
 import 'package:http/http.dart' as http;
 
 import '../helper/Supabase_helper.dart';
-
+//Đây là lớp đối tượng sản phẩm chứa thông tin
 class Product {
   int id;
   int? gia;
@@ -10,6 +10,9 @@ class Product {
   Product({required this.id, this.gia, required this.ten, this.moTa, this.anh});
 
   factory Product.fromJson(Map<String, dynamic> json) {
+    //Dùng để chuyển đổi qua lại giữa:
+    // JSON từ Supabase (dạng map) → Product
+    // Product → dạng JSON để lưu lên Supabase
     return Product(
       id: json["id"] as int,
       gia: json["gia"] as int,
@@ -30,7 +33,7 @@ class Product {
 //
 }
 
-class ProductSnapShot {
+class ProductSnapShot { // đây là 1 lớp helper
   Product product;
   ProductSnapShot({required this.product});
 

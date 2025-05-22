@@ -10,7 +10,7 @@ import 'Product_Add_Page.dart';
 
 class ProductAdminPage extends StatelessWidget {
   ProductAdminPage({super.key});
-  late BuildContext myContext;
+  late BuildContext myContext; //myContext được lưu lại để dùng trong các hành động
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class ProductAdminPage extends StatelessWidget {
                     child: ListView.separated(
                       itemBuilder: (context, index) {
                         Product product = list[index];
-                        return Slidable(
+                        return Slidable( //Slidable – thao tác vuốt để sửa hoặc xóa
                           key: const ValueKey(0),
 
                           // The end action pane is the one at the right or the bottom side.
@@ -40,7 +40,7 @@ class ProductAdminPage extends StatelessWidget {
                             extentRatio: 0.6,
                             motion: ScrollMotion(),
                             children: [
-                              SlidableAction(
+                              SlidableAction(//SlidableAction – Cập nhật
                                 onPressed: (context) {
                                   Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) => PageUpdateProduct(product: product),)
@@ -51,7 +51,7 @@ class ProductAdminPage extends StatelessWidget {
                                 icon: Icons.edit,
                                 label: 'Cập nhật',
                               ),
-                              SlidableAction(
+                              SlidableAction(//SlidableAction – Xóa
                                 onPressed: (context) async{
                                   String? xacNhan = await showConfirmDialog(myContext, "Bạn chắc chắn muốn xóa sản phẩm này ko???");
                                   if(xacNhan == "ok") {

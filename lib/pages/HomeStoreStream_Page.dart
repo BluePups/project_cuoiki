@@ -29,8 +29,8 @@ class AppStreamStore extends StatelessWidget {
 
 
 class PageHomeStream extends StatelessWidget {
-  const PageHomeStream({super.key});
-
+  PageHomeStream({super.key});
+  int count =0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,7 +51,7 @@ class PageHomeStream extends StatelessWidget {
                   Get.to(() => PageStoreLogin());
               },
               child: badges.Badge(
-                showBadge: controller.slMHGH! > 0,
+                showBadge: controller.slMHGH > 0,
                 badgeContent: Text('${controller.slMHGH}', style: TextStyle(color: Colors.red)),
                 child: Icon(Icons.shopping_cart),
               ),

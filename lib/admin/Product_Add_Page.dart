@@ -7,16 +7,17 @@ import 'package:cuoiki/admin/Product_Admin_Page.dart';
 import 'package:cuoiki/models/Product_Model.dart';
 import 'package:cuoiki/helper/Supabase_helper.dart';
 
-class PageAddProduct extends StatefulWidget {
+class PageAddProduct extends StatefulWidget { //Dùng StatefulWidget vì trạng thái ảnh
+  // và các trường nhập sẽ thay đổi.
   const PageAddProduct({super.key});
 
   @override
   State<PageAddProduct> createState() => _PageAddProductState();
 }
 
-class _PageAddProductState extends State<PageAddProduct> {
-  XFile? xFile;
-  TextEditingController txtID = TextEditingController();
+class _PageAddProductState extends State<PageAddProduct> {//biến trạng thái
+  XFile? xFile; // lưu ảnh đã chọn
+  TextEditingController txtID = TextEditingController();// Điều khiển nội dung nhập vào từ các trường.
   TextEditingController txtTen = TextEditingController();
   TextEditingController txtGia = TextEditingController();
   TextEditingController txtMoTa = TextEditingController();

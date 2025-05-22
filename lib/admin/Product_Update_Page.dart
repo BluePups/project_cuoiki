@@ -124,7 +124,8 @@ class _PageUpdateProductState extends State<PageUpdateProduct> {
   }
 
   @override
-  void initState() {
+  void initState() { //initState() đã khởi tạo đầy đủ
+    //Tốt — đảm bảo dữ liệu cũ được hiển thị để chỉnh sửa.
     super.initState();
     txtID.text = widget.product.id.toString();
     txtTen.text = widget.product.ten;

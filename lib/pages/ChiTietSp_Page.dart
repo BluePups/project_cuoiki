@@ -96,7 +96,7 @@ class PageChitietProduct extends StatelessWidget {
           final currentUser = Supabase.instance.client.auth.currentUser;
           if(currentUser != null) {
             ControllerProduct.get().themMHGH(product, currentUser.id);
-            print("id là: " + response!.user!.id.toString());
+            // print("id là: " + response!.user!.id.toString());
           }
           else
             Navigator.of(context).push(

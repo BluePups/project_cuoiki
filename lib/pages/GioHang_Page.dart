@@ -1,7 +1,7 @@
 import 'package:cuoiki/controllers/GioHang_Controller.dart';
 import 'package:cuoiki/models/GioHang_Model.dart';
+import 'package:cuoiki/pages/DonHang_Page.dart';
 import 'package:cuoiki/pages/HomeStoreStream_Page.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
@@ -10,13 +10,19 @@ class PageGioHang extends StatefulWidget {
   PageGioHang({super.key});
 
   @override
-  State<PageGioHang> createState() => _PageGioHangStreamState();
-
+  State<PageGioHang> createState() => _PageGioHangState();
 }
 
-class _PageGioHangStreamState extends State<PageGioHang> {
+class _PageGioHangState extends State<PageGioHang> {
   final currentUser = Supabase.instance.client.auth.currentUser;
   final gioHangController = Get.put(ControllerGioHang());
+  late Future<List<GioHangSanPham>> futureGioHang;
+
+  @override
+  void initState() {
+    super.initState();
+    futureGioHang = GioHangSanPhamSnapshot.fetchGioHangSanPham(currentUser!.id);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,12 +30,21 @@ class _PageGioHangStreamState extends State<PageGioHang> {
       appBar: AppBar(
         title: Text("Giỏ hàng của bạn"),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => PageHomeStream()));
+            },
+            child: Icon(Icons.home),
+          ),
+        ],
       ),
-      body: StreamBuilder(
-        stream: GioHangSanPhamSnapshot.getDataGioHangSanPham(currentUser!.id),
+      body: FutureBuilder<List<GioHangSanPham>>(
+        future: futureGioHang,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return Center(child: Text("Lỗi: ${snapshot.error}"));
+            return Center(child: Text("Lỗi: \${snapshot.error}"));
           }
           if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
@@ -38,7 +53,7 @@ class _PageGioHangStreamState extends State<PageGioHang> {
           var gioHangs = snapshot.data!;
 
           if (gioHangs.isEmpty) {
-            return Center(child: Text("Giỏ hàng của bạn đang trống, hãy vào trang chủ và mua gì đó"));
+            return Center(child: Text("Giỏ hàng của bạn đang trống, hãy vào trang chủ và mua gì đó"));
           }
 
           return Column(
@@ -87,20 +102,74 @@ class _PageGioHangStreamState extends State<PageGioHang> {
                                       Text(
                                         item.ten_sp ?? "",
                                         style: TextStyle(
-                                            fontSize: 16,
+                                            fontSize: 12,
                                             fontWeight: FontWeight.bold),
                                       ),
                                       SizedBox(height: 4),
-                                      Text("Số lượng: ${item.soLuong}"),
+                                      Row(
+                                        children: [
+                                          Text("Số lượng: "),
+                                          IconButton(
+                                              onPressed: () {
+                                                if((item.soLuong ?? 1) > 1) {
+                                                  gioHangController.capNhatSoLuong(item.id, (item.soLuong ?? 1) - 1);
+                                                  setState(() {
+                                                    futureGioHang = GioHangSanPhamSnapshot.fetchGioHangSanPham(currentUser!.id);
+                                                  });
+                                                }
+                                              },
+                                              icon: Icon(Icons.remove)
+                                          ),
+                                          Text("${item.soLuong}", style: TextStyle(fontSize: 16),),
+                                          IconButton(
+                                              onPressed: () {
+                                                gioHangController.capNhatSoLuong(item.id, (item.soLuong ?? 1) + 1);
+                                                setState(() {
+                                                  futureGioHang = GioHangSanPhamSnapshot.fetchGioHangSanPham(currentUser!.id);
+                                                });
+                                              },
+                                              icon: Icon(Icons.add)
+                                          ),
+                                        ],
+                                      ),
                                     ],
                                   ),
                                 ),
-                                Text(
-                                  "${item.gia_sp ?? 0} đ",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.red),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      "${item.gia_sp ?? 0} đ",
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                    SizedBox(height: 8),
+                                    ElevatedButton.icon(
+                                      onPressed: () {
+                                        gioHangController.xoaSanPhamKhoiGioHang(item.id);
+                                        setState(() {
+                                          futureGioHang = GioHangSanPhamSnapshot.fetchGioHangSanPham(currentUser!.id);
+                                        });
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(content: Text("Đã xóa sản phẩm")),
+                                        );
+                                      },
+                                      icon: Icon(Icons.delete, size: 18),
+                                      label: Text("Xóa", style: TextStyle(fontSize: 14)),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.redAccent,
+                                        foregroundColor: Colors.white,
+                                        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                        textStyle: TextStyle(fontSize: 14),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(6),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -127,12 +196,12 @@ class _PageGioHangStreamState extends State<PageGioHang> {
                           if (gioHangController.selectedIds.isEmpty) {
                             return;
                           } else {
-                            gioHangController.xuLyThanhToan();
-                            ScaffoldMessenger.of(context!).showSnackBar(
+                            gioHangController.xuLyThanhToan(tongTien, currentUser!.id);
+                            ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text("Đã thanh toán")),
                             );
-                            Navigator.of(context!).push(
-                                MaterialPageRoute(builder: (context) => PageHomeStream(),)
+                            Navigator.of(context).push(
+                                MaterialPageRoute(builder: (context) => DonhangPage(id_user: currentUser!.id))
                             );
                           }
                         },

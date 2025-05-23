@@ -1,4 +1,5 @@
 import 'package:cuoiki/admin/Product_Admin_Page.dart';
+import 'package:cuoiki/pages/DonHang_Page.dart';
 import 'package:cuoiki/pages/HomeStoreStream_Page.dart';
 import 'package:cuoiki/pages/HomeStore_Page.dart';
 import 'package:cuoiki/pages/User_Page.dart';
@@ -67,7 +68,7 @@ class PageHome extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
-              BuildButton(context, title: "Trang chủ", destination: AppStore()),
+              // BuildButton(context, title: "Trang chủ", destination: AppStore()),
               BuildButton(context, title: "Trang chủ Stream", destination: AppStreamStore()),
               BuildButton(context, title: "Trang chủ Admin", destination: PageProductAdmin()),
             ],

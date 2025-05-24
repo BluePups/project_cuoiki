@@ -2,6 +2,7 @@ import 'package:cuoiki/controllers/User_Controller.dart';
 import 'package:cuoiki/main.dart';
 import 'package:cuoiki/models/Product_Model.dart';
 import 'package:cuoiki/pages/ChiTietSp_Page.dart';
+import 'package:cuoiki/pages/DonHang_Page.dart';
 import 'package:cuoiki/pages/GioHang_Page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -73,6 +74,7 @@ class PageHomeStream extends StatelessWidget {
                   accountName: null,
                 ),
                 BuildButton(context, title: "Thông tin", destination: PageThongTinKH()),
+                BuildButton(context, title: "Đơn hàng", destination: PageDonHang(id_user:Supabase.instance.client.auth.currentUser!.id)),
                 ListTile(
                   leading: Icon(Icons.logout),
                   title: Text('Đăng xuất'),

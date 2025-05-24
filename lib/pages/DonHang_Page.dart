@@ -2,35 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
 
+import '../controllers/DonHang_Controller.dart';
 import '../models/DonHang_Model.dart';
 import 'ChiTietDH_Page.dart';
 
-class DonhangPage extends StatefulWidget {
+class PageDonHang extends StatefulWidget {
   final String id_user;
 
-  const DonhangPage({super.key, required this.id_user});
+  const PageDonHang({super.key, required this.id_user});
 
   @override
-  State<DonhangPage> createState() => _DonhangPageState();
+  State<PageDonHang> createState() => _DonhangPageState();
 }
 
-class _DonhangPageState extends State<DonhangPage> {
-  final SupabaseClient _client = Supabase.instance.client;
-
-  // Changed to return a Stream<List<DonHang>> for real-time updates
-  Stream<List<DonHang>> fetchDonHangStream() {
-    // Using .stream() to listen for real-time changes
-    return _client
-        .from('DonHang')
-        .stream(primaryKey: ['id']) // Specify primary key for efficient streaming
-        .eq('id_user', widget.id_user)
-        .order('ngayDat', ascending: false)
-        .map((maps) => maps.map((e) => DonHang.fromJson(e)).toList());
-  }
-
+class _DonhangPageState extends State<PageDonHang> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +27,7 @@ class _DonhangPageState extends State<DonhangPage> {
         foregroundColor: Colors.white, // Text color for app bar
       ),
       body: StreamBuilder<List<DonHang>>( // Changed from FutureBuilder to StreamBuilder
-        stream: fetchDonHangStream(), // Use the stream method
+        stream: fetchDonHangStream(widget.id_user), // Use the stream method
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());

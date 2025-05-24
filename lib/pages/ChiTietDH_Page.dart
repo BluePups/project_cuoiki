@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/ChiTietDonHang_Model.dart';
 
@@ -8,18 +7,6 @@ class ChiTietDonHangPage extends StatelessWidget {
 
   const ChiTietDonHangPage({super.key, required this.donHangId});
 
-  Future<List<ChiTietDonHang>> fetchChiTietDonHang() async {
-    final supabase = Supabase.instance.client;
-
-    final response = await supabase
-        .from('ChiTietDonHang')
-        .select('id, id_donHang, soLuong, gia_sp, id_sp, SanPham(ten)')
-        .eq('id_donHang', donHangId);
-
-    return (response as List<dynamic>)
-        .map((e) => ChiTietDonHang.fromJson(e as Map<String, dynamic>))
-        .toList();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +16,7 @@ class ChiTietDonHangPage extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
     ),
       body: FutureBuilder<List<ChiTietDonHang>>(
-        future: fetchChiTietDonHang(),
+        future: fetchChiTietDonHang(donHangId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());

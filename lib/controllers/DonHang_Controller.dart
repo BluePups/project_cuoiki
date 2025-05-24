@@ -1,12 +1,14 @@
 import 'package:supabase/supabase.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
-final SupabaseClient _supabaseClient = Supabase.instance.client;
+import '../models/DonHang_Model.dart';
+
+final supabase = Supabase.instance.client;
 
 Future<void> taoDonHangTuGioHang(String idUser, int tongTien) async {
   try {
     // Tạo đơn hàng mới
-    final response = await _supabaseClient
+    final response = await supabase
         .from('DonHang')
         .insert({
       'id_user': idUser,
@@ -17,13 +19,13 @@ Future<void> taoDonHangTuGioHang(String idUser, int tongTien) async {
 
     final donHangId = response[0]['id'];
 
-    final gioHangItems = await _supabaseClient
+    final gioHangItems = await supabase
         .from('GioHang')
         .select()
         .eq('user_id', idUser);
 
     for (var item in gioHangItems) {
-      await _supabaseClient
+      await supabase
           .from('ChiTietDonHang')
           .insert({
         'donhang_id': donHangId,
@@ -33,7 +35,7 @@ Future<void> taoDonHangTuGioHang(String idUser, int tongTien) async {
       });
     }
 
-    await _supabaseClient
+    await supabase
         .from('GioHang')
         .delete()
         .eq('user_id', idUser);
@@ -41,4 +43,15 @@ Future<void> taoDonHangTuGioHang(String idUser, int tongTien) async {
   } catch (e) {
     throw Exception('Lỗi khi tạo đơn hàng: $e');
   }
+}
+
+// Changed to return a Stream<List<DonHang>> for real-time updates
+Stream<List<DonHang>> fetchDonHangStream(id_user) {
+  // Using .stream() to listen for real-time changes
+  return supabase
+      .from('DonHang')
+      .stream(primaryKey: ['id']) // Specify primary key for efficient streaming
+      .eq('id_user',id_user)
+      .order('ngayDat', ascending: false)
+      .map((maps) => maps.map((e) => DonHang.fromJson(e)).toList());
 }

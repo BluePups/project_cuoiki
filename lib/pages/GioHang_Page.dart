@@ -201,7 +201,7 @@ class _PageGioHangState extends State<PageGioHang> {
                               SnackBar(content: Text("Đã thanh toán")),
                             );
                             Navigator.of(context).push(
-                                MaterialPageRoute(builder: (context) => DonhangPage(id_user: currentUser!.id))
+                                MaterialPageRoute(builder: (context) => PageDonHang(id_user: currentUser!.id))
                             );
                           }
                         },

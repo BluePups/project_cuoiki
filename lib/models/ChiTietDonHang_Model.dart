@@ -1,3 +1,5 @@
+import 'package:supabase_auth_ui/supabase_auth_ui.dart';
+
 class ChiTietDonHang {
   final int id;
   final int id_donHang;
@@ -25,4 +27,17 @@ class ChiTietDonHang {
       ten_sp: json['SanPham']?['ten'],
     );
   }
+}
+
+Future<List<ChiTietDonHang>> fetchChiTietDonHang(donHangId) async {
+  final supabase = Supabase.instance.client;
+
+  final response = await supabase
+      .from('ChiTietDonHang')
+      .select('id, id_donHang, soLuong, gia_sp, id_sp, SanPham(ten)')
+      .eq('id_donHang', donHangId);
+
+  return (response as List<dynamic>)
+      .map((e) => ChiTietDonHang.fromJson(e as Map<String, dynamic>))
+      .toList();
 }

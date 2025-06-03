@@ -1,6 +1,5 @@
 import 'package:cuoiki/models/Product_Model.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ControllerProduct extends GetxController {
@@ -14,7 +13,7 @@ class ControllerProduct extends GetxController {
   void onReady() async {
     super.onReady();
 
-    _maps = await ProductSnapShot.getMapProduct();
+    _maps = await ProductSnapShot.getMapProducts();
     update(["products"]);
     ProductSnapShot.listenProductchange(
       _maps,

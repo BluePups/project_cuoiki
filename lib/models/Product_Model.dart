@@ -1,5 +1,3 @@
-import 'package:http/http.dart' as http;
-
 import '../helper/Supabase_helper.dart';
 //Đây là lớp đối tượng sản phẩm chứa thông tin
 class Product {
@@ -56,14 +54,6 @@ class ProductSnapShot { // đây là 1 lớp helper
         .from('SanPham')
         .insert(newProduct.toJson());
     return data;
-  }
-
-  static Future<Map<int, Product>> getMapProduct() async {
-    final data = await supabase.from("SanPham").select();
-    var iterable = data.map((e) => Product.fromJson(e),).toList();
-    Map<int, Product> _maps = Map.fromIterable(
-      iterable, key: (product) => product.id, value: (product) => product,);
-    return _maps;
   }
 
   static Future<Map<int, Product>> getMapProducts() async {

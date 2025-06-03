@@ -1,9 +1,6 @@
 import 'package:cuoiki/models/GioHang_Model.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
-
-import '../pages/HomeStoreStream_Page.dart';
 
 class ControllerGioHang extends GetxController {
   Map<int, GioHang> _maps = {};
@@ -11,8 +8,6 @@ class ControllerGioHang extends GetxController {
 
   static ControllerGioHang get() => Get.find();
   Iterable<GioHang> get gioHangs => _maps.values;
-
-  BuildContext? get context => null;
 
   @override
   void onReady() async{
@@ -37,14 +32,67 @@ class ControllerGioHang extends GetxController {
     selectedIds.clear();
   }
 
-  void xuLyThanhToan() async {
+  void xuLyThanhToan(int tongTien, String idUser) async {
     final supabase = Supabase.instance.client;
+
+    final gioHangItems = await supabase
+        .from('GioHang')
+        .select()
+        .inFilter('id', selectedIds.toList());
+
+    final response = await supabase
+        .from('DonHang')
+        .insert({
+      'id_user': idUser,
+      'tongTien': tongTien,
+      'trangThai': 'Đang xử lý',
+    })
+        .select();
+
+    final donHangId = response[0]['id'];
+
+    for (var item in gioHangItems) {
+      final sp = await supabase
+          .from('SanPham')
+          .select('gia')
+          .eq('id', item['id_sp'])
+          .single();
+
+      final giaSp = sp['gia'];
+
+      await supabase.from('ChiTietDonHang').insert({
+        'id_donHang': donHangId,
+        'id_sp': item['id_sp'],
+        'soLuong': item['soLuong'],
+        'gia_sp': giaSp,
+      });
+    }
+
 
     for (var id in selectedIds) {
       await supabase.from('GioHang').delete().eq('id', id);
     }
-
     selectedIds.clear();
+  }
+
+
+  Future<void> capNhatSoLuong(int idGioHang, int soLuongMoi) async {
+    final supabase = Supabase.instance.client;
+
+    await supabase
+        .from("GioHang")
+        .update({"soLuong": soLuongMoi})
+        .eq("id", idGioHang);
+
+    update();
+    refresh();
+  }
+
+  Future<void> xoaSanPhamKhoiGioHang(int id) async {
+    await Supabase.instance.client.from('GioHang').delete().eq('id', id);
+
+    update();
+    // refresh();
   }
 }
 

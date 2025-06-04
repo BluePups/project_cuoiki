@@ -150,7 +150,6 @@ class _PageThongTinKHState extends State<PageThongTinKH> {
         isLoading = false;
       });
     } else {
-      // Xử lý nếu chưa đăng nhập
       setState(() {
         isLoading = false;
       });
@@ -161,33 +160,108 @@ class _PageThongTinKHState extends State<PageThongTinKH> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Thông tin khách hàng"),
+        title: Text("Thông Tin Khách Hàng"),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : khachHang == null
           ? Center(child: Text("Không tìm thấy thông tin khách hàng."))
-          : Padding(
+          : SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("ID khách hàng: ${khachHang!.id}", style: TextStyle(fontSize: 18)),
+            CircleAvatar(
+              radius: 50,
+              backgroundColor: Colors.blue.shade100,
+              child: Icon(Icons.person, size: 50, color: Colors.blue),
+            ),
+            SizedBox(height: 16),
+            Text(
+              khachHang!.tenKH.isNotEmpty
+                  ? khachHang!.tenKH
+                  : "Chưa có tên",
+              style: TextStyle(
+                  fontSize: 22, fontWeight: FontWeight.bold),
+            ),
             SizedBox(height: 8),
-            Text("Tên khách hàng: ${khachHang!.tenKH}", style: TextStyle(fontSize: 18)),
-            SizedBox(height: 8),
-            Text("Số điện thoại: ${khachHang!.soDienThoai}", style: TextStyle(fontSize: 18)),
-            SizedBox(height: 8),
-            Text("Địa chỉ: ${khachHang!.diaChi}", style: TextStyle(fontSize: 18)),
-            SizedBox(height: 50),
-            BuildButton(context, title: "Cập nhật thông tin", destination: PageUserUpdate(khachHang: khachHang!)),
-            SizedBox(height: 10,),
-            BuildButton(context, title: "Quay lại trang chủ để mua hàng nào", destination: PageHomeStream())
+            Divider(thickness: 1),
+            SizedBox(height: 16),
+            _buildInfoCard("ID khách hàng", khachHang!.id),
+            _buildInfoCard("Số điện thoại",
+                khachHang!.soDienThoai.isEmpty ? "Chưa cập nhật" : khachHang!.soDienThoai),
+            _buildInfoCard("Địa chỉ",
+                khachHang!.diaChi.isEmpty ? "Chưa cập nhật" : khachHang!.diaChi),
+            SizedBox(height: 30),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) =>
+                        PageUserUpdate(khachHang: khachHang!)));
+              },
+              icon: Icon(Icons.edit),
+              label: Text("Cập nhật thông tin"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orange,
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(
+                    horizontal: 24, vertical: 12),
+                textStyle: TextStyle(fontSize: 16),
+              ),
+            ),
+            SizedBox(height: 16),
+            OutlinedButton.icon(
+              onPressed: () {
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                        builder: (_) => PageHomeStream()),
+                        (route) => false);
+              },
+              icon: Icon(Icons.home),
+              label: Text("Quay lại trang chủ để mua hàng"),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.blue,
+                padding: EdgeInsets.symmetric(
+                    horizontal: 20, vertical: 12),
+                side: BorderSide(color: Colors.blue),
+                textStyle: TextStyle(fontSize: 15),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
+
+  Widget _buildInfoCard(String label, String value) {
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 8),
+      elevation: 3,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: ListTile(
+        leading: Icon(
+          _getIconForLabel(label),
+          color: Colors.blue,
+        ),
+        title: Text(label,
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+        subtitle: Text(value, style: TextStyle(fontSize: 15)),
+      ),
+    );
+  }
+
+  IconData _getIconForLabel(String label) {
+    switch (label) {
+      case "ID khách hàng":
+        return Icons.perm_identity;
+      case "Số điện thoại":
+        return Icons.phone;
+      case "Địa chỉ":
+        return Icons.home;
+      default:
+        return Icons.info;
+    }
+  }
 }
+
 

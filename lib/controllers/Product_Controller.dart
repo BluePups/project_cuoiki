@@ -55,7 +55,8 @@ class ControllerProduct extends GetxController {
 
     final uniqueIdSp = list.map((e) => e["id_sp"]).toSet();
 
-    slMHGH = uniqueIdSp.length as RxInt;
+    // slMHGH = uniqueIdSp.length as RxInt;
+    slMHGH.value = uniqueIdSp.length;
 
     update(["gh"]);
   }

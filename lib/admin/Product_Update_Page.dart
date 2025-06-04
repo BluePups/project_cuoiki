@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cuoiki/admin/Product_Admin_Page.dart';
@@ -9,8 +8,8 @@ import 'package:cuoiki/helper/Supabase_helper.dart';
 import 'package:cuoiki/helper/Dialogs.dart';
 
 class PageUpdateProduct extends StatefulWidget {
+  final Product product;
   PageUpdateProduct({super.key, required this.product});
-  Product product;
 
   @override
   State<PageUpdateProduct> createState() => _PageUpdateProductState();
@@ -18,118 +17,206 @@ class PageUpdateProduct extends StatefulWidget {
 
 class _PageUpdateProductState extends State<PageUpdateProduct> {
   XFile? xFile;
-  TextEditingController txtID = TextEditingController();
-  TextEditingController txtTen = TextEditingController();
-  TextEditingController txtGia = TextEditingController();
-  TextEditingController txtMoTa = TextEditingController();
+  late TextEditingController txtID;
+  late TextEditingController txtTen;
+  late TextEditingController txtGia;
+  late TextEditingController txtMoTa;
   String? imageUrl;
+
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    txtID = TextEditingController(text: widget.product.id.toString());
+    txtTen = TextEditingController(text: widget.product.ten);
+    txtGia = TextEditingController(text: widget.product.gia.toString());
+    txtMoTa = TextEditingController(text: widget.product.moTa ?? "");
+  }
+
+  @override
+  void dispose() {
+    txtID.dispose();
+    txtTen.dispose();
+    txtGia.dispose();
+    txtMoTa.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Chỉnh sửa sản phẩm"),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text("Chỉnh sửa sản phẩm", style: TextStyle(color: Colors.white),),
+        backgroundColor: theme.colorScheme.primary,
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(16),
+        child: Form(
+          key: _formKey,
           child: Column(
             children: [
+              // Ảnh sản phẩm
               Container(
-                height: 300,
-                child: xFile == null ? Image.network(widget.product.anh?? "Linh mac dinh") : Image.file(File(xFile!.path)),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  ElevatedButton(
-                      onPressed: () async{
-                        var imagePicker = await ImagePicker().pickImage(source: ImageSource.gallery);
-                        if(imagePicker != null) {
-                          setState(() {
-                            xFile = imagePicker;
-                          });
-                        }
-                      },
-                      child: Text("Chọn ảnh")
-                  ),
-                  SizedBox(width: 15,),
-                ],
-              ),
-              TextField(
-                readOnly: true,
-                controller: txtID,
-                keyboardType: TextInputType.numberWithOptions(signed: false, decimal: false),
-                decoration: InputDecoration(
-                  labelText: "ID",
+                height: 280,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: Colors.grey.shade400),
+                ),
+                child: xFile == null
+                    ? ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: widget.product.anh != null && widget.product.anh!.isNotEmpty
+                      ? Image.network(widget.product.anh!, fit: BoxFit.cover)
+                      : const Icon(Icons.image_outlined, size: 100, color: Colors.grey),
+                )
+                    : ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.file(File(xFile!.path), fit: BoxFit.cover),
                 ),
               ),
-              TextField(
+              const SizedBox(height: 12),
+
+              // Nút chọn ảnh
+              Align(
+                alignment: Alignment.centerRight,
+                child: ElevatedButton.icon(
+                  onPressed: () async {
+                    final imagePicker = await ImagePicker().pickImage(source: ImageSource.gallery);
+                    if (imagePicker != null) {
+                      setState(() {
+                        xFile = imagePicker;
+                      });
+                    }
+                  },
+                  icon: const Icon(Icons.photo_library),
+                  label: const Text("Chọn ảnh"),
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // ID (khóa, không cho chỉnh sửa)
+              TextFormField(
+                controller: txtID,
+                readOnly: true,
+                decoration: InputDecoration(
+                  labelText: "ID",
+                  prefixIcon: const Icon(Icons.confirmation_num),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Tên sản phẩm
+              TextFormField(
                 controller: txtTen,
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
-                  labelText: "Tên",
+                  labelText: "Tên sản phẩm",
+                  prefixIcon: const Icon(Icons.label),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Vui lòng nhập tên sản phẩm';
+                  }
+                  return null;
+                },
               ),
-              TextField(
+
+              const SizedBox(height: 16),
+
+              // Giá
+              TextFormField(
                 controller: txtGia,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: "Giá",
+                  labelText: "Giá",
+                  prefixIcon: const Icon(Icons.monetization_on),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Vui lòng nhập giá';
+                  }
+                  if (int.tryParse(value) == null) {
+                    return 'Giá phải là số';
+                  }
+                  return null;
+                },
               ),
-              TextField(
+
+              const SizedBox(height: 16),
+
+              // Mô tả
+              TextFormField(
                 controller: txtMoTa,
                 keyboardType: TextInputType.text,
+                maxLines: 3,
                 decoration: InputDecoration(
-                  labelText: "Mô tả",
+                  labelText: "Mô tả",
+                  prefixIcon: const Icon(Icons.description),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  alignLabelWithHint: true,
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  ElevatedButton(
-                    onPressed: () async{
-                      Product product = widget.product;
-                      showSnackBar(context, message: "Đang cập nhật ${product.ten}...", seconds: 10);
-                      if(xFile != null) {
-                        imageUrl = await uploadImage(
-                          image: File(xFile!.path),
-                          bucket: "images",
-                          path: "images/product_${txtID.text}.jpg",
-                          upsert: true,
-                        );
-                        product.anh = imageUrl;
-                      }
-                      product.ten = txtTen.text;
-                      product.gia = int.parse(txtGia.text);
-                      product.moTa = txtMoTa.text;
-                      await ProductSnapShot.update(product);
-                      showSnackBar(context, message: "Đã cập nhật");
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => ProductAdminPage(),)
+
+              const SizedBox(height: 30),
+
+              // Nút Cập nhật
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    if (!_formKey.currentState!.validate()) return;
+
+                    showSnackBar(context, message: "Đang cập nhật ${txtTen.text}...", seconds: 10);
+
+                    if (xFile != null) {
+                      imageUrl = await uploadImage(
+                        image: File(xFile!.path),
+                        bucket: "images",
+                        path: "images/product_${txtID.text}.jpg",
+                        upsert: true,
                       );
-                    },
-                    child: Text("Cập nhật"),
+                      widget.product.anh = imageUrl;
+                    }
+
+                    widget.product.ten = txtTen.text.trim();
+                    widget.product.gia = int.parse(txtGia.text);
+                    widget.product.moTa = txtMoTa.text.trim();
+
+                    await ProductSnapShot.update(widget.product);
+
+                    showSnackBar(context, message: "Đã cập nhật sản phẩm");
+
+                    Navigator.of(context).pop(); // Quay lại trang admin
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    backgroundColor: theme.colorScheme.primary,
                   ),
-                  SizedBox(width: 15,),
-                ],
+                  child: const Text(
+                    "Cập nhật sản phẩm",
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
+                ),
               ),
             ],
           ),
         ),
       ),
     );
-  }
-
-  @override
-  void initState() { //initState() đã khởi tạo đầy đủ
-    //Tốt — đảm bảo dữ liệu cũ được hiển thị để chỉnh sửa.
-    super.initState();
-    txtID.text = widget.product.id.toString();
-    txtTen.text = widget.product.ten;
-    txtGia.text = widget.product.gia.toString();
-    txtMoTa.text = widget.product.moTa?? "";
   }
 }

@@ -20,28 +20,98 @@ class PageChitietProduct extends StatelessWidget {
       appBar: AppBar(
         title: Text("${product.ten}"),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // actions: [
+        //   GetBuilder(
+        //     init: ControllerProduct.get(),
+        //     id: "gh",
+        //     builder: (controller) => GestureDetector(
+        //       onTap: () {
+        //         final currentUser = Supabase.instance.client.auth.currentUser;
+        //         if(currentUser != null) {
+        //           Get.to(() => PageGioHang());
+        //         }
+        //         else
+        //           Get.to(() => PageStoreLogin());
+        //       },
+        //       child: badges.Badge(
+        //         showBadge: controller.slMHGH.value > 0,
+        //         badgeContent: Text('${controller.slMHGH.value}', style: TextStyle(color: Colors.white,
+        //           fontSize: 14,
+        //           fontWeight: FontWeight.bold,)),
+        //         child: Icon(Icons.shopping_cart),
+        //       ),
+        //     ),
+        //   ),
+        //   SizedBox(width: 20,)
+        // ],
         actions: [
-          GetBuilder(
+          GetBuilder<ControllerProduct>(
             init: ControllerProduct.get(),
             id: "gh",
             builder: (controller) => GestureDetector(
               onTap: () {
                 final currentUser = Supabase.instance.client.auth.currentUser;
-                if(currentUser != null) {
+                if (currentUser != null) {
                   Get.to(() => PageGioHang());
-                }
-                else
+                } else {
                   Get.to(() => PageStoreLogin());
+                }
               },
               child: badges.Badge(
-                showBadge: controller.slMHGH! > 0,
-                badgeContent: Text('${controller.slMHGH}', style: TextStyle(color: Colors.red)),
-                child: Icon(Icons.shopping_cart),
+                showBadge: controller.slMHGH.value > 0,
+                badgeContent: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.redAccent,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        offset: Offset(1, 1),
+                        blurRadius: 4,
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    '${controller.slMHGH.value}',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                badgeStyle: badges.BadgeStyle(
+                  badgeColor: Colors.transparent,
+                  elevation: 0,
+                  padding: EdgeInsets.zero,
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.cyan.shade700.withOpacity(0.9),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black38,
+                        blurRadius: 6,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  padding: EdgeInsets.all(8),
+                  child: Icon(
+                    Icons.shopping_cart,
+                    size: 20,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
           ),
-          SizedBox(width: 20,)
+          SizedBox(width: 20),
         ],
+
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -92,11 +162,16 @@ class PageChitietProduct extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () async{
           final currentUser = Supabase.instance.client.auth.currentUser;
           if(currentUser != null) {
-            ControllerProduct.get().themMHGH(product, currentUser.id);
+            // ControllerProduct.get().themMHGH(product, currentUser.id);
             // print("id là: " + response!.user!.id.toString());
+            final controller = ControllerProduct.get();
+            await controller.themMHGH(product, currentUser.id);
+            // ✅ Tăng số lượng hiện tại lên 1
+            controller.slMHGH.value += 1;
+            controller.update(["gh"]); // cập nhật giao diện badge
           }
           else
             Navigator.of(context).push(

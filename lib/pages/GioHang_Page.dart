@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
+import '../controllers/Product_Controller.dart';
+
 class PageGioHang extends StatefulWidget {
   PageGioHang({super.key});
 
@@ -148,11 +150,20 @@ class _PageGioHangState extends State<PageGioHang> {
                                     ),
                                     SizedBox(height: 8),
                                     ElevatedButton.icon(
-                                      onPressed: () {
-                                        gioHangController.xoaSanPhamKhoiGioHang(item.id);
+                                      onPressed: () async {
+                                        await gioHangController.xoaSanPhamKhoiGioHang(item.id);
+
                                         setState(() {
                                           futureGioHang = GioHangSanPhamSnapshot.fetchGioHangSanPham(currentUser!.id);
                                         });
+                                        // 🔻 Kiểm tra nếu không còn sản phẩm, reset số badge
+                                        final controllerProduct = ControllerProduct.get();
+                                        final gioHangList = await GioHangSanPhamSnapshot.fetchGioHangSanPham(currentUser!.id);
+                                        if (gioHangList.isEmpty) {
+                                          controllerProduct.slMHGH.value = 0;
+                                          controllerProduct.update(["gh"]);
+                                        }
+
                                         ScaffoldMessenger.of(context).showSnackBar(
                                           SnackBar(content: Text("Đã xóa sản phẩm")),
                                         );
@@ -197,6 +208,14 @@ class _PageGioHangState extends State<PageGioHang> {
                             return;
                           } else {
                             gioHangController.xuLyThanhToan(tongTien, currentUser!.id);
+                            // ➕ Reset badge sau thanh toán
+                            final controllerProduct = ControllerProduct.get();
+                            controllerProduct.slMHGH.value = 0;
+                            controllerProduct.update(["gh"]);
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text("Đã thanh toán")),
+                            );
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text("Đã thanh toán")),
                             );

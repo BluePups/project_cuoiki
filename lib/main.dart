@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'admin/admin_dashboard_page.dart';
 import 'controllers/User_Controller.dart';
 
 void main() async {
@@ -70,7 +71,8 @@ class PageHome extends StatelessWidget {
             children: [
               // BuildButton(context, title: "Trang chủ", destination: AppStore()),
               BuildButton(context, title: "Trang chủ Stream", destination: AppStreamStore()),
-              BuildButton(context, title: "Trang chủ Admin", destination: ProductAdminPage()),
+              BuildButton(context, title: "Trang chủ Admin", destination: PageProductAdmin()),
+              BuildButton(context, title: "Admin", destination: AdminDashboardPage()),
             ],
           ),
         ),

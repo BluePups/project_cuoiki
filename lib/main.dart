@@ -1,12 +1,12 @@
+import 'package:cuoiki/admin/AdminViewAllOdersPage.dart';
 import 'package:cuoiki/admin/Product_Admin_Page.dart';
-import 'package:cuoiki/pages/DonHang_Page.dart';
 import 'package:cuoiki/pages/HomeStoreStream_Page.dart';
-import 'package:cuoiki/pages/HomeStore_Page.dart';
-import 'package:cuoiki/pages/User_Page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'admin/AdminViewAllCartsPage.dart';
+import 'admin/AdminViewAllUsersPage.dart';
 import 'controllers/User_Controller.dart';
 
 void main() async {
@@ -71,6 +71,10 @@ class PageHome extends StatelessWidget {
               // BuildButton(context, title: "Trang chủ", destination: AppStore()),
               BuildButton(context, title: "Trang chủ Stream", destination: AppStreamStore()),
               BuildButton(context, title: "Trang chủ Admin", destination: PageProductAdmin()),
+              BuildButton(context, title: "Giỏ hàng", destination: AdminViewAllCartsPage()),
+              BuildButton(context, title: "Đơn hàng", destination: AdminViewAllOrdersPage()),
+              BuildButton(context, title: "Khách hàng", destination: AdminViewAllUsersPage()),
+
             ],
           ),
         ),

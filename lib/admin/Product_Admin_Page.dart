@@ -1,11 +1,16 @@
+import 'package:cuoiki/admin/AdminViewAllUsersPage.dart';
 import 'package:cuoiki/admin/Product_Add_Page.dart';
-import 'package:cuoiki/admin/Product_Update_Page.dart';
 import 'package:cuoiki/admin/Product_Update_Page.dart';
 import 'package:cuoiki/models/Product_Model.dart';
 import 'package:cuoiki/helper/Dialogs.dart';
 import 'package:cuoiki/mywidgets/async_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+
+import '../main.dart';
+import 'AdminViewAllCartsPage.dart';
+import 'AdminViewAllOdersPage.dart';
 
 class PageProductAdmin extends StatelessWidget {
   PageProductAdmin({super.key});
@@ -17,6 +22,16 @@ class PageProductAdmin extends StatelessWidget {
       appBar: AppBar(
         title: Text("Product Admin"),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      ),
+      drawer: Drawer(
+        child:
+          ListView(
+            children: [
+              BuildButton(context, title: "Thông tin", destination: AdminViewAllCartsPage()),
+              BuildButton(context, title: "Đơn hàng", destination: AdminViewAllOrdersPage()),
+              BuildButton(context, title: "Khách hàng", destination: AdminViewAllUsersPage()),
+            ],
+          ),
       ),
       body: StreamBuilder<List<Product>>(
         stream: ProductSnapShot.getProductStream(),

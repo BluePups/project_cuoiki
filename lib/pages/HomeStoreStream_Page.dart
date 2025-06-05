@@ -103,7 +103,6 @@ class PageHomeStream extends StatelessWidget {
           );
         }),
       ),
-
       body: StreamBuilder(
           stream: ProductSnapShot.getProductStream(),
           builder: (context, snapshot) {

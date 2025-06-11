@@ -21,7 +21,7 @@ class _PageAddProductState extends State<PageAddProduct> {
   final TextEditingController txtMoTa = TextEditingController();
 
   final _formKey = GlobalKey<FormState>(); // Thêm key cho form validation
-
+  //setState() để cập nhật biến xFile, từ đó trigger render lại Image.file(...).
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -32,6 +32,10 @@ class _PageAddProductState extends State<PageAddProduct> {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
+        //Vì sao bạn dùng SingleChildScrollView bao quanh Column?
+        //
+        // A: Để tránh lỗi "overflow" khi bàn phím xuất hiện hoặc khi nội dung quá dài trên màn hình nhỏ.
+        // SingleChildScrollView cho phép cuộn nếu cần.
         padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
@@ -56,6 +60,13 @@ class _PageAddProductState extends State<PageAddProduct> {
               const SizedBox(height: 12),
 
               // Nút chọn ảnh
+              //dùng thư viện image_picker để mở thư viện ảnh.
+              //
+              // Khi người dùng nhấn nút "Chọn ảnh", app gọi ImagePicker().pickImage(...) để lấy ảnh từ gallery.
+              //
+              // Sau đó ảnh được lưu vào biến xFile và hiển thị bằng Image.file().
+
+
               Align(
                 alignment: Alignment.centerRight,
                 child: ElevatedButton.icon(
@@ -178,6 +189,9 @@ class _PageAddProductState extends State<PageAddProduct> {
                     );
 
                     var imageUrl = await uploadImage(
+                      //Gọi hàm uploadImage() để tải ảnh lên Supabase.
+                      // Hàm này cần 3 tham số: ảnh dạng File, tên bucket (images) và đường dẫn lưu (products/Product_{id}.jpg).
+                      // Sau khi upload xong, URL ảnh sẽ được trả về và lưu vào product.anh.
                       image: File(xFile!.path),
                       bucket: "images",
                       path: "images/product_${txtID.text}.jpg",
@@ -190,7 +204,10 @@ class _PageAddProductState extends State<PageAddProduct> {
                       moTa: txtMoTa.text.trim(),
                       anh: imageUrl,
                     );
-
+                    //Gọi uploadImage() để tải ảnh lên server.
+                    // Tạo một đối tượng Product với các thông tin nhập từ form.
+                    // Gọi ProductSnapShot.insert(product) để thêm vào cơ sở dữ liệu.
+                    // Hiển thị SnackBar thông báo và chuyển về trang danh sách sản phẩm (PageProductAdmin).
                     await ProductSnapShot.insert(product);
 
                     ScaffoldMessenger.of(context).clearSnackBars();

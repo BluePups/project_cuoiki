@@ -9,114 +9,154 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 
 class PageProductAdmin extends StatelessWidget {
   PageProductAdmin({super.key});
+  final TextEditingController _searchController = TextEditingController();
+  final ValueNotifier<String> _searchKeyword = ValueNotifier<String>("");
   late BuildContext myContext;
-
+  void _onSearch(){
+    _searchKeyword.value = _searchController.text.toLowerCase();
+  }
+//PageProductAdmin là một StatelessWidget.
+// Vì trạng thái nội bộ không thay đổi trong chính widget này – dữ liệu được cập nhật qua StreamBuilder,
+// nên không cần sử dụng StatefulWidget.
+  // Toàn bộ phần thay đổi (product list) được quản lý bằng stream (ProductSnapShot.getProductStream()),
+  // nên dùng StatelessWidget là hợp lý và tiết kiệm tài nguyên.
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Product Admin"),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: StreamBuilder<List<Product>>(
-          stream: ProductSnapShot.getProductStream(),
-          builder: (context, snapshot) {
-            myContext = context;
-            return AsyncWidget(
-              snapshot: snapshot,
-              builder: (context, snapshot) {
-                var list = snapshot.data! as List<Product>;
+      body:
+      Column(
+        children:[
+          // Ô tìm kiếm
+          // Ô tìm kiếm + nút tìm
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                // TextField nhập từ khóa
+                Expanded(
+                  child: TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      hintText: "Nhập tên hoặc ID sản phẩm...",
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(),
+                    ),
+                    onSubmitted: (_) => _onSearch(),
+                  ),
+                ),
+                SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: _onSearch,
+                  child: Text("Tìm"),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: ValueListenableBuilder<String>(
+              valueListenable: _searchKeyword,
+              builder: (context, keyword, _) {
+                return StreamBuilder<List<Product>>(
+                  stream: ProductSnapShot.getProductStream(),
+                  builder: (context, snapshot) {
+                    return AsyncWidget(
+                      snapshot: snapshot,
+                      builder: (context, snapshot) {
+                        final list = snapshot.data ?? [];
 
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ListView.separated(
-                      itemBuilder: (context, index) {
-                        var product = list[index];
+                        final filtered = list.where((product) {
+                          final name = (product.ten ?? '').toLowerCase();
+                          final id = (product.id ?? '').toString().toLowerCase();
+                          return name.contains(keyword) || id.contains(keyword);
+                        }).toList();
 
-                        return Slidable(
-                          // Specify a key if the Slidable is dismissible.
-                          key: const ValueKey(0),
+                        if (filtered.isEmpty) {
+                          return Center(child: Text("Không tìm thấy sản phẩm."));
+                        }
 
-                          // The end action pane is the one at the right or the bottom side.
-                          endActionPane: ActionPane(
-                            extentRatio: 0.7,
-                            motion: ScrollMotion(),
-                            children: [
-                              SlidableAction(
-                                // An action can be bigger than the others.
-                                onPressed: (context) {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        PageUpdateProduct(product: product),
-                                  ));
-                                },
-                                backgroundColor: Colors.blue,
-                                foregroundColor: Colors.white,
-                                icon: Icons.edit,
-                                label: 'Cập nhật',
+                        return ListView.separated(
+                          itemCount: filtered.length,
+                          separatorBuilder: (_, __) => Divider(thickness: 1),
+                          itemBuilder: (context, index) {
+                            final product = filtered[index];
+                            return Slidable(
+                              key: ValueKey(product.id),
+                              endActionPane: ActionPane(
+                                motion: ScrollMotion(),
+                                extentRatio: 0.7,
+                                children: [
+                                  SlidableAction(
+                                    onPressed: (_) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => PageUpdateProduct(product: product),
+                                        ),
+                                      );
+                                    },
+                                    backgroundColor: Colors.blue,
+                                    foregroundColor: Colors.white,
+                                    icon: Icons.edit,
+                                    label: 'Cập nhật',
+                                  ),
+                                  SlidableAction(
+                                    onPressed: (_) async {
+                                      final xacNhan = await showConfirmDialog(
+                                          context, "Bạn có muốn xóa ${product.ten}?");
+                                      if (xacNhan == "ok") {
+                                        ProductSnapShot.delete(product.id);
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(content: Text("Đã xóa ${product.id}")),
+                                        );
+                                      }
+                                    },
+                                    backgroundColor: Colors.red,
+                                    foregroundColor: Colors.white,
+                                    icon: Icons.delete_forever,
+                                    label: 'Xóa',
+                                  ),
+                                ],
                               ),
-                              SlidableAction(
-                                onPressed: (context) async {
-                                  String? xacNhan = await showConfirmDialog(
-                                      myContext,
-                                      "Bạn có muốn xóa ${product.ten}?");
-
-                                  if (xacNhan == "ok") {
-                                    ProductSnapShot.delete(product.id);
-                                    ScaffoldMessenger.of(myContext)
-                                        .clearSnackBars();
-                                    ScaffoldMessenger.of(myContext)
-                                        .showSnackBar(SnackBar(
-                                        content:
-                                        Text("Đã xóa ${product.id}")));
-                                  }
-                                },
-                                backgroundColor: Colors.red,
-                                foregroundColor: Colors.white,
-                                icon: Icons.delete_forever,
-                                label: 'Xóa',
+                              child: ListTile(
+                                leading: Image.network(
+                                  product.anh ?? '',
+                                  width: 60,
+                                  height: 60,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) =>
+                                      Icon(Icons.image_not_supported),
+                                ),
+                                title: Text(product.ten ?? ""),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("ID: ${product.id}"),
+                                    Text("Giá: ${product.gia} VNĐ"),
+                                  ],
+                                ),
                               ),
-                            ],
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                  flex: 1,
-                                  child: Image.network(
-                                    product.anh ?? "No image",
-                                    fit: BoxFit.fill,
-                                    height: 100,
-                                  )),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                  flex: 2,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: [
-                                      Text("id: ${product.id}"),
-                                      Text("Tên: ${product.ten}"),
-                                      Text("Giá: ${product.gia} VNĐ"),
-                                      Text("Mô tả: ${product.moTa ?? ""}")
-                                    ],
-                                  )),
-                            ],
-                          ),
+                            );
+                          },
                         );
                       },
-                      separatorBuilder: (context, index) => Divider(
-                        thickness: 2,
-                      ),
-                      itemCount: list.length),
+                    );
+                  },
                 );
               },
-            );
-          }),
+            ),
+          ),
+        ]
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(
+            //Cập nhật: Sử dụng Navigator.of(context).push(...) để chuyển sang PageUpdateProduct, truyền theo đối tượng product.
+            // Thêm sản phẩm: Tương tự, chuyển sang PageAddProduct.
             builder: (context) => PageAddProduct(),
           ));
         },

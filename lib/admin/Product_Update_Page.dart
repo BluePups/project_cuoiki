@@ -27,6 +27,9 @@ class _PageUpdateProductState extends State<PageUpdateProduct> {
 
   @override
   void initState() {
+    // initState() dùng để khởi tạo dữ liệu khi widget được tạo ra.
+    //
+    //gán dữ liệu sản phẩm hiện tại vào các TextEditingController để hiển thị lên giao diện
     super.initState();
     txtID = TextEditingController(text: widget.product.id.toString());
     txtTen = TextEditingController(text: widget.product.ten);
@@ -108,6 +111,10 @@ class _PageUpdateProductState extends State<PageUpdateProduct> {
               TextFormField(
                 controller: txtID,
                 readOnly: true,
+                //Tại sao trường ID không cho sửa?
+                // Trả lời:
+                // Vì ID là định danh duy nhất (primary key) của sản phẩm trong database.
+                // Thay đổi ID có thể gây lỗi hoặc làm mất tính toàn vẹn dữ liệu, nên dùng readOnly: true.
                 decoration: InputDecoration(
                   labelText: "ID",
                   prefixIcon: const Icon(Icons.confirmation_num),
@@ -174,6 +181,18 @@ class _PageUpdateProductState extends State<PageUpdateProduct> {
               const SizedBox(height: 30),
 
               // Nút Cập nhật
+              //Khi người dùng nhấn nút “Cập nhật”, chuyện gì xảy ra?
+              // Trả lời chi tiết:
+              //
+              // Gửi SnackBar báo đang cập nhật.
+              //
+              // Nếu có ảnh mới, tải ảnh mới lên và cập nhật URL.
+              //
+              // Cập nhật tên, giá, mô tả.
+              //
+              // Gọi ProductSnapShot.update(product) để lưu thay đổi vào Supabase.
+              //
+              // Hiển thị thông báo thành công và chuyển về PageProductAdmin.
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -188,6 +207,12 @@ class _PageUpdateProductState extends State<PageUpdateProduct> {
                         bucket: "images",
                         path: "images/product_${txtID.text}.jpg",
                         upsert: true,
+                        //Hàm uploadImage() làm gì và tại sao có upsert: true?
+                        // Trả lời:
+                        //
+                        // uploadImage() là hàm tải ảnh lên Supabase storage.
+                        //
+                        // upsert: true giúp ghi đè file ảnh cũ nếu đã tồn tại → tránh tạo nhiều ảnh thừa.
                       );
                       widget.product.anh = imageUrl;
                     }
